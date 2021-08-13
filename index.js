@@ -24,8 +24,6 @@ const job = new CronJob(
   true
 );
 
-getHoroscope(scopes[Math.floor(Math.random() * scopes.length)]);
-
 async function getHoroscope(sign) {
   const res = await fetch(
     `https://aztro.sameerkumar.website?sign=${sign.en}&day=today`,
@@ -48,4 +46,8 @@ function slack(message) {
       text: message,
     }),
   });
+}
+
+if (process.env.debugscope == "yep") {
+  getHoroscope(scopes[Math.floor(Math.random() * scopes.length)]);
 }
