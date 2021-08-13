@@ -19,23 +19,25 @@ const scopes = [
 
 const job = new CronJob(
   "00 00 08 * * *",
-  () => scopes.forEach((sign) => getHoroscope(sign.en, sign.sv)),
+  () => scopes.forEach((sign) => getHoroscope(sign)),
   null,
   true
 );
 
-async function getHoroscope(sign, signTranslation) {
+getHoroscope(scopes[Math.floor(Math.random() * scopes.length)]);
+
+async function getHoroscope(sign) {
   const res = await fetch(
-    `https://aztro.sameerkumar.website?sign=${sign}&day=today`,
+    `https://aztro.sameerkumar.website?sign=${sign.en}&day=today`,
     { method: "POST" }
   );
-  const json = await res.json();
 
+  const json = await res.json();
   slack(
-    `:${sign.toLowerCase()}: ${signTranslation} (${json.date_range}): 
+    `:${sign.en.toLowerCase()}: ${sign.sv} (${json.date_range}): 
     ${json.description} 
       \r\n Turnummer: ${json.lucky_number} 
-      \r\n Turtid: ${json_lucky_time} 
+      \r\n Turtid: ${json.lucky_time} 
       \r\n Bästis: ${scopes.find((x) => x.en == json.compatibility).sv}`
   );
 }
