@@ -2,38 +2,42 @@ const fetch = require("node-fetch");
 const CronJob = require("cron").CronJob;
 
 const path = process.env.slack_path;
+const scopes = [
+  { en: "Aries", sv: "Väduren" },
+  { en: "Taurus", sv: "Oxen" },
+  { en: "Gemini", sv: "Tvillingarna" },
+  { en: "Cancer", sv: "Kräftan" },
+  { en: "Leo", sv: "Lejonet" },
+  { en: "Virgo", sv: "Jungfrun" },
+  { en: "Libra", sv: "Vågen" },
+  { en: "Scorpio", sv: "Skorpionen" },
+  { en: "Sagittarius", sv: "Skytten" },
+  { en: "Capricorn", sv: "Stenbocken" },
+  { en: "Aquarius", sv: "Vattumannen" },
+  { en: "Pisces", sv: "Fisken" },
+];
 
 const job = new CronJob(
   "00 00 08 * * *",
-  () =>
-    [
-      "Aries",
-      "Taurus",
-      "Gemini",
-      "Cancer",
-      "Leo",
-      "Virgo",
-      "Libra",
-      "Scorpio",
-      "Sagittarius",
-      "Capricorn",
-      "Aquarius",
-      "Pisces",
-    ].forEach((sign) => getHoroscope(sign)),
+  () => scopes.forEach((sign) => getHoroscope(sign.en, sign.sv)),
   null,
   true
 );
 
-getHoroscope("libra");
-
-async function getHoroscope(sign) {
+async function getHoroscope(sign, signTranslation) {
   const res = await fetch(
     `https://aztro.sameerkumar.website?sign=${sign}&day=today`,
     { method: "POST" }
   );
   const json = await res.json();
 
-  slack(`${sign}: ${json.description}`);
+  slack(
+    `:${sign.toLowerCase()}: ${signTranslation} (${json.date_range}): 
+    ${json.description} 
+      \r\n Turnummer: ${json.lucky_number} 
+      \r\n Turtid: ${json_lucky_time} 
+      \r\n Bästis: ${scopes.find((x) => x.en == json.compatibility).sv}`
+  );
 }
 
 function slack(message) {
