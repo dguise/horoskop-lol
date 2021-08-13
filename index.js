@@ -33,13 +33,12 @@ async function getHoroscope(sign) {
   );
 
   const json = await res.json();
-  slack(
-    `:${sign.en.toLowerCase()}: ${sign.sv} (${json.date_range}): 
-    ${json.description} 
+  slack(`:${sign.en.toLowerCase()}: ${sign.sv} (${json.date_range}): ${
+    json.description
+  } 
       \r\n Turnummer: ${json.lucky_number} 
-      \r\n Turtid: ${json.lucky_time} 
-      \r\n Bästis: ${scopes.find((x) => x.en == json.compatibility).sv}`
-  );
+Turtid: ${json.lucky_time} 
+Bästis: ${scopes.find((x) => x.en == json.compatibility).sv}`);
 }
 
 function slack(message) {
